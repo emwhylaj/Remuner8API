@@ -15,8 +15,6 @@ namespace API.Repositories
             _remuner8Context = remuner8Context;
         }
 
-        
-
         public async Task CreateLeaveTypeAsync(LeaveType leaveType)
         {
             if (leaveType is null)
@@ -45,7 +43,6 @@ namespace API.Repositories
             }
             catch (Exception)
             {
-
                 return false;
             }
             
