@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
 
 #nullable disable
 
@@ -11,11 +10,6 @@ namespace API.Models
     [Index(nameof(EmployeeId), Name = "UQ__Taxes__C134C9C0AE6154C9", IsUnique = true)]
     public partial class Tax
     {
-        public Tax()
-        {
-            Payslips = new HashSet<Payslip>();
-        }
-
         [Key]
         [Column("taxId")]
         public int TaxId { get; set; }
@@ -34,8 +28,5 @@ namespace API.Models
         [ForeignKey(nameof(EmployeeId))]
         [InverseProperty(nameof(EmployeeBiodata.Tax))]
         public virtual EmployeeBiodata Employee { get; set; }
-
-        [InverseProperty(nameof(Payslip.Tax))]
-        public virtual ICollection<Payslip> Payslips { get; set; }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using API.Models;
 using Microsoft.EntityFrameworkCore;
-using Remuner8_Backend.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,10 +16,43 @@ namespace API.Repositories
             this.context = context;
         }
 
-        public async Task<int> EmployeeCountAsync()
+        public async Task<IEnumerable<EmployeeBiodata>> GetAllEmployeesAsync()
         {
-            var employeecount = await context.EmployeeBiodatas.CountAsync();
-            return employeecount;
+            return await context.EmployeeBiodatas.Include(e => e.JobDescription)
+                                                 .Include(e => e.Department)
+                                                 .ToListAsync();
+        }
+
+        public async Task<EmployeeBiodata> GetEmployeeByIdAsync(string id)
+        {
+            return await context.EmployeeBiodatas.Where(e => e.EmployeeId == id)
+                                                 .Include(e => e.JobDescription)
+                                                 .Include(e => e.Department).FirstOrDefaultAsync();
+        }
+
+        public async Task<bool> SaveChangesAsync()
+        {
+            return await context.SaveChangesAsync() >= 0;
+        }
+
+        public async Task CreateEmployeeAsync(EmployeeBiodata employee)
+        {
+            if (employee is null) throw new ArgumentNullException(nameof(employee));
+
+            await context.EmployeeBiodatas.AddAsync(employee);
+        }
+
+        public async Task DeleteEmployeeAsync(EmployeeBiodata employee)
+        {
+            var employeeToDelete = await context.EmployeeBiodatas.FindAsync(employee.EmployeeId);
+            if (employeeToDelete is null) throw new ArgumentNullException(nameof(employee));
+
+            context.EmployeeBiodatas.Remove(employee);
+        }
+
+        public Task UpdateEmployee(string id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -17,8 +17,73 @@ namespace API.Migrations
             modelBuilder
                 .HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.3")
+                .HasAnnotation("ProductVersion", "5.0.5")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("API.Models.ApplicationUser", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("AspNetUsers");
+                });
 
             modelBuilder.Entity("API.Models.AssigneeTable", b =>
                 {
@@ -47,8 +112,11 @@ namespace API.Migrations
                         .HasColumnType("decimal(19,4)")
                         .HasColumnName("amount");
 
-                    b.Property<decimal>("BonusName")
-                        .HasColumnType("decimal(19,4)")
+                    b.Property<string>("BonusName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(100)")
                         .HasColumnName("bonusName");
 
                     b.Property<int>("DepartmentId")
@@ -64,6 +132,78 @@ namespace API.Migrations
                     b.HasIndex("JobDescriptionId");
 
                     b.ToTable("Bonuses");
+                });
+
+            modelBuilder.Entity("API.Models.CompanyDetails", b =>
+                {
+                    b.Property<int>("CompanyId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("companyId")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(200)")
+                        .HasColumnName("address");
+
+                    b.Property<string>("CompanyName")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(30)")
+                        .HasColumnName("companyName");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("email");
+
+                    b.Property<int>("MaxSalaryDays")
+                        .HasColumnType("int")
+                        .HasColumnName("maxSalaryDays");
+
+                    b.Property<string>("MobileNumber")
+                        .HasMaxLength(15)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(15)")
+                        .HasColumnName("mobileNumber");
+
+                    b.Property<string>("OfficialPhoneNumber")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(15)")
+                        .HasColumnName("officialPhoneNumber");
+
+                    b.Property<string>("PostalCode")
+                        .HasMaxLength(7)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(7)")
+                        .HasColumnName("postalCode");
+
+                    b.Property<DateTime>("SalaryEndDate")
+                        .HasColumnType("date")
+                        .HasColumnName("salaryEndDate");
+
+                    b.Property<DateTime>("SalaryStartDate")
+                        .HasColumnType("date")
+                        .HasColumnName("salaryStartDate");
+
+                    b.Property<string>("WebsiteUrl")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("websiteURL");
+
+                    b.HasKey("CompanyId");
+
+                    b.ToTable("SystemDefaults");
                 });
 
             modelBuilder.Entity("API.Models.Department", b =>
@@ -103,13 +243,14 @@ namespace API.Migrations
 
                     b.Property<string>("Address")
                         .IsRequired()
-                        .HasMaxLength(200)
+                        .HasMaxLength(500)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(200)")
+                        .HasColumnType("varchar(500)")
                         .HasColumnName("address");
 
-                    b.Property<byte[]>("Avatar")
-                        .HasColumnType("image")
+                    b.Property<string>("Avatar")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(max)")
                         .HasColumnName("avatar");
 
                     b.Property<string>("BankName")
@@ -184,7 +325,7 @@ namespace API.Migrations
                         .IsFixedLength(true);
 
                     b.Property<decimal>("OtherAllowances")
-                        .HasColumnType("decimal(10,4)")
+                        .HasColumnType("decimal(19,4)")
                         .HasColumnName("otherAllowances");
 
                     b.Property<string>("OtherName")
@@ -193,13 +334,6 @@ namespace API.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(50)")
                         .HasColumnName("otherName");
-
-                    b.Property<string>("PayslipId")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(10)")
-                        .HasColumnName("payslipID");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
@@ -266,6 +400,10 @@ namespace API.Migrations
                         .HasColumnType("decimal(19,4)")
                         .HasColumnName("basicSalary");
 
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int")
+                        .HasColumnName("departmentId");
+
                     b.Property<decimal>("HousingAllowance")
                         .HasColumnType("decimal(19,4)")
                         .HasColumnName("housingAllowance");
@@ -282,6 +420,8 @@ namespace API.Migrations
                         .HasColumnName("transportAllowance");
 
                     b.HasKey("JobDescriptionId");
+
+                    b.HasIndex("DepartmentId");
 
                     b.ToTable("JobDescriptions");
                 });
@@ -317,27 +457,6 @@ namespace API.Migrations
                     b.ToTable("LeaveTypes");
                 });
 
-            modelBuilder.Entity("API.Models.Password", b =>
-                {
-                    b.Property<string>("Email")
-                        .HasMaxLength(50)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(50)")
-                        .HasColumnName("email");
-
-                    b.Property<string>("Password1")
-                        .IsRequired()
-                        .HasMaxLength(32)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(32)")
-                        .HasColumnName("password");
-
-                    b.HasKey("Email")
-                        .HasName("PK__Password__AB6E6165CEDA53DD");
-
-                    b.ToTable("Passwords");
-                });
-
             modelBuilder.Entity("API.Models.PayrollAdditionItem", b =>
                 {
                     b.Property<int>("Id")
@@ -367,177 +486,12 @@ namespace API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AssigneeId");
+                    b.HasIndex(new[] { "AssigneeId" }, "IX_PayrollAdditionItems_AssigneeTableAssigneeid");
 
-                    b.HasIndex("CategoryId");
-
-                    b.ToTable("PayrollAdditionItems");
-                });
-
-            modelBuilder.Entity("API.Models.PayrollAdditionItemsAssignment", b =>
-                {
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(19,4)");
-
-                    b.Property<string>("EmployeeId")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(10)");
-
-                    b.Property<int>("PayrollItemId")
-                        .HasColumnType("int");
-
-                    b.ToTable("PayrollAdditionItemsAssignment");
-                });
-
-            modelBuilder.Entity("API.Models.PayrollCategory", b =>
-                {
-                    b.Property<int>("CategoryId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("categoryId")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("CategoryName")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(30)")
-                        .HasColumnName("categoryName");
-
-                    b.HasKey("CategoryId")
-                        .HasName("PK__PayrollC__23CAF1D8676751FC");
-
-                    b.ToTable("PayrollCategories");
-                });
-
-            modelBuilder.Entity("API.Models.PayrollDeductionItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(19,4)")
-                        .HasColumnName("amount");
-
-                    b.Property<int>("AssigneeId")
-                        .HasColumnType("int")
-                        .HasColumnName("assigneeId");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(100)")
-                        .HasColumnName("name");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AssigneeId");
-
-                    b.ToTable("PayrollDeductionItems");
-                });
-
-            modelBuilder.Entity("API.Models.PayrollDeductionItemsAssignment", b =>
-                {
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(19,4)");
-
-                    b.Property<string>("EmployeeId")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(10)");
-
-                    b.Property<int>("PayrollItemId")
-                        .HasColumnType("int");
-
-                    b.ToTable("PayrollDeductionItemsAssignment");
-                });
-
-            modelBuilder.Entity("API.Models.PayrollOvertimeItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(30)")
-                        .HasColumnName("name");
-
-                    b.Property<int>("Rateid")
-                        .HasColumnType("int")
-                        .HasColumnName("rateid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Rateid");
-
-                    b.ToTable("PayrollOvertimeItems");
-                });
-
-            modelBuilder.Entity("API.Models.PayrollOvertimeItemsAssignment", b =>
-                {
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(19,4)");
-
-                    b.Property<string>("EmployeeId")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(10)");
-
-                    b.Property<int>("PayrollItemId")
-                        .HasColumnType("int");
-
-                    b.ToTable("PayrollOvertimeItemsAssignment");
-                });
-
-            modelBuilder.Entity("API.Models.PayrollRate", b =>
-            modelBuilder.Entity("API.Models.PayrollAdditionItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(19,4)")
-                        .HasColumnName("amount");
-
-                    b.Property<int>("AssigneeId")
-                        .HasColumnType("int")
-                        .HasColumnName("assigneeId");
-
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int")
-                        .HasColumnName("categoryId");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(100)")
-                        .HasColumnName("name");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AssigneeId");
-
-                    b.HasIndex("CategoryId");
+                    b.HasIndex(new[] { "CategoryId" }, "IX_PayrollAdditionItems_PayrollCategoryCategoryId");
 
                     b.ToTable("PayrollAdditionItems");
-                }));
+                });
 
             modelBuilder.Entity("API.Models.PayrollAdditionItemsAssignment", b =>
                 {
@@ -644,6 +598,71 @@ namespace API.Migrations
                     b.ToTable("PayrollDeductionItemsAssignment");
                 });
 
+            modelBuilder.Entity("API.Models.PayrollDefault", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("ID")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Address")
+                        .HasMaxLength(255)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<decimal>("FifthAnnualTaxableIncome")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("FirstAnnualTaxableIncome")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("FourthAnnualTaxableIncome")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("MaxOvertimeHours")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MaxWorkingDays")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("MaximumSalaryPeriod")
+                        .HasColumnType("date");
+
+                    b.Property<decimal>("MinTaxPercentage")
+                        .HasColumnType("decimal(5,2)");
+
+                    b.Property<DateTime>("MinimumSalaryPeriod")
+                        .HasColumnType("date");
+
+                    b.Property<decimal>("NonTaxableIncome")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Office")
+                        .HasMaxLength(255)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<decimal>("SecondAnnualTaxableIncome")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("SixthAnnualTaxableIncome")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Tax")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<decimal>("ThirdAnnualTaxableIncome")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PayrollDefaults");
+                });
+
             modelBuilder.Entity("API.Models.PayrollOvertimeItem", b =>
                 {
                     b.Property<int>("Id")
@@ -698,27 +717,6 @@ namespace API.Migrations
                 });
 
             modelBuilder.Entity("API.Models.PayrollRate", b =>
-                {
-                    b.Property<int>("RateId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("rateId")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("RateType")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(50)")
-                        .HasColumnName("rateType");
-
-                    b.HasKey("RateId")
-                        .HasName("PK__PayrollR__5705EA1446EDB076");
-
-                    b.ToTable("PayrollRates");
-                });
-
-            modelBuilder.Entity("API.Models.PayrollTransaction", b =>
                 {
                     b.Property<int>("RateId")
                         .ValueGeneratedOnAdd()
@@ -795,8 +793,11 @@ namespace API.Migrations
                         .HasColumnType("varchar(10)")
                         .HasColumnName("payslipId");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("date")
+                    b.Property<string>("Date")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)")
                         .HasColumnName("date");
 
                     b.Property<string>("EmployeeId")
@@ -810,10 +811,6 @@ namespace API.Migrations
                         .HasColumnType("decimal(19,4)")
                         .HasColumnName("netSalary");
 
-                    b.Property<int>("TaxId")
-                        .HasColumnType("int")
-                        .HasColumnName("taxId");
-
                     b.Property<decimal>("TotalDeductions")
                         .HasColumnType("decimal(19,4)")
                         .HasColumnName("totalDeductions");
@@ -825,8 +822,6 @@ namespace API.Migrations
                     b.HasKey("PayslipId");
 
                     b.HasIndex("EmployeeId");
-
-                    b.HasIndex("TaxId");
 
                     b.ToTable("Payslip");
                 });
@@ -864,6 +859,77 @@ namespace API.Migrations
                         .HasName("PK__PensionF__056D327AA7859729");
 
                     b.ToTable("PensionFundAdministration");
+                });
+
+            modelBuilder.Entity("API.Models.RefreshToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("AddedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ExpiryDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRevoked")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("JwtId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Token")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RefreshTokens");
+                });
+
+            modelBuilder.Entity("API.Models.Request", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Date")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Requests");
                 });
 
             modelBuilder.Entity("API.Models.StatutoryDeduction", b =>
@@ -924,70 +990,6 @@ namespace API.Migrations
                     b.HasIndex("PfaCode");
 
                     b.ToTable("StatutoryDeductions");
-                });
-
-            modelBuilder.Entity("API.Models.SystemDefault", b =>
-                {
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(200)")
-                        .HasColumnName("address");
-
-                    b.Property<string>("CompanyName")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(30)")
-                        .HasColumnName("companyName");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(50)")
-                        .HasColumnName("email");
-
-                    b.Property<int>("MaxSalaryDays")
-                        .HasColumnType("int")
-                        .HasColumnName("maxSalaryDays");
-
-                    b.Property<string>("MobileNumber")
-                        .HasMaxLength(15)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(15)")
-                        .HasColumnName("mobileNumber");
-
-                    b.Property<string>("OfficialPhoneNumber")
-                        .IsRequired()
-                        .HasMaxLength(15)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(15)")
-                        .HasColumnName("officialPhoneNumber");
-
-                    b.Property<string>("PostalCode")
-                        .HasMaxLength(7)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(7)")
-                        .HasColumnName("postalCode");
-
-                    b.Property<DateTime>("SalaryEndDate")
-                        .HasColumnType("date")
-                        .HasColumnName("salaryEndDate");
-
-                    b.Property<DateTime>("SalaryStartDate")
-                        .HasColumnType("date")
-                        .HasColumnName("salaryStartDate");
-
-                    b.Property<string>("WebsiteUrl")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(100)")
-                        .HasColumnName("websiteURL");
-
-                    b.ToTable("SystemDefaults");
                 });
 
             modelBuilder.Entity("API.Models.Tax", b =>
@@ -1051,27 +1053,135 @@ namespace API.Migrations
                     b.ToTable("TimeSheet");
                 });
 
-            modelBuilder.Entity("API.Models.UserRole", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("AspNetRoles");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("id")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Role")
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RoleId")
                         .IsRequired()
-                        .HasMaxLength(30)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(30)")
-                        .HasColumnName("role");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex(new[] { "Role" }, "UQ__UserRole__863D21484D4C2003")
-                        .IsUnique();
+                    b.HasIndex("RoleId");
 
-                    b.ToTable("UserRoles");
+                    b.ToTable("AspNetRoleClaims");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserClaims");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserLogins");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("RoleId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("AspNetUserTokens");
                 });
 
             modelBuilder.Entity("API.Models.Bonus", b =>
@@ -1096,17 +1206,9 @@ namespace API.Migrations
             modelBuilder.Entity("API.Models.EmployeeBiodata", b =>
                 {
                     b.HasOne("API.Models.Department", "Department")
-                        .WithMany("EmployeeBiodatas");
-                    b.HasOne("API.Models.Department", "Department")
                         .WithMany("EmployeeBiodatas")
                         .HasForeignKey("DepartmentId")
                         .HasConstraintName("FK__EmployeeB__depar__3A81B327")
-                        .IsRequired();
-
-                    b.HasOne("API.Models.Password", "EmailAddressNavigation")
-                        .WithOne("EmployeeBiodata")
-                        .HasForeignKey("API.Models.EmployeeBiodata", "EmailAddress")
-                        .HasConstraintName("FK__EmployeeB__email__3D5E1FD2")
                         .IsRequired();
 
                     b.HasOne("API.Models.JobDescription", "JobDescription")
@@ -1117,11 +1219,20 @@ namespace API.Migrations
 
                     b.Navigation("Department");
 
-                    b.Navigation("EmailAddressNavigation");
-
                     b.Navigation("JobDescription");
                 });
 
+            modelBuilder.Entity("API.Models.JobDescription", b =>
+                {
+                    b.HasOne("API.Models.Department", "Department")
+                        .WithMany("JobDescriptions")
+                        .HasForeignKey("DepartmentId")
+                        .HasConstraintName("FK_JobDescriptions_Departments")
+                        .IsRequired();
+
+                    b.Navigation("Department");
+                });
+
             modelBuilder.Entity("API.Models.PayrollAdditionItem", b =>
                 {
                     b.HasOne("API.Models.AssigneeTable", "Assignee")
@@ -1140,48 +1251,6 @@ namespace API.Migrations
 
                     b.Navigation("Category");
                 });
-
-            modelBuilder.Entity("API.Models.PayrollDeductionItem", b =>
-                {
-                    b.HasOne("API.Models.AssigneeTable", "Assignee")
-                        .WithMany("PayrollDeductionItems")
-                        .HasForeignKey("AssigneeId")
-                        .HasConstraintName("FK_PayrollDeductionItems_AssigneeTable")
-                        .IsRequired();
-
-                    b.Navigation("Assignee");
-                });
-
-            modelBuilder.Entity("API.Models.PayrollOvertimeItem", b =>
-                {
-                    b.HasOne("API.Models.PayrollRate", "Rate")
-                        .WithMany("PayrollOvertimeItems")
-                        .HasForeignKey("Rateid")
-                        .HasConstraintName("FK_PayrollOvertimeItems_PayrollRates")
-                        .IsRequired();
-
-                    b.Navigation("Rate");
-                });
-
-            modelBuilder.Entity("API.Models.PayrollTransaction", b =>
-            modelBuilder.Entity("API.Models.PayrollAdditionItem", b =>
-                {
-                    b.HasOne("API.Models.AssigneeTable", "Assignee")
-                        .WithMany("PayrollAdditionItems")
-                        .HasForeignKey("AssigneeId")
-                        .HasConstraintName("FK_PayrollAdditionItems_AssigneeTable")
-                        .IsRequired();
-
-                    b.HasOne("API.Models.PayrollCategory", "Category")
-                        .WithMany("PayrollAdditionItems")
-                        .HasForeignKey("CategoryId")
-                        .HasConstraintName("FK_PayrollAdditionItems_PayrollCategories")
-                        .IsRequired();
-
-                    b.Navigation("Assignee");
-
-                    b.Navigation("Category");
-                }));
 
             modelBuilder.Entity("API.Models.PayrollAdditionItemsAssignment", b =>
                 {
@@ -1281,15 +1350,16 @@ namespace API.Migrations
                         .HasConstraintName("FK_Payslip_EmployeeBiodata")
                         .IsRequired();
 
-                    b.HasOne("API.Models.Tax", "Tax")
-                        .WithMany("Payslips")
-                        .HasForeignKey("TaxId")
-                        .HasConstraintName("FK_Payslip_Taxes")
-                        .IsRequired();
-
                     b.Navigation("Employee");
+                });
 
-                    b.Navigation("Tax");
+            modelBuilder.Entity("API.Models.RefreshToken", b =>
+                {
+                    b.HasOne("API.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("API.Models.StatutoryDeduction", b =>
@@ -1333,21 +1403,71 @@ namespace API.Migrations
                     b.Navigation("Employee");
                 });
 
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.HasOne("API.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.HasOne("API.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("API.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.HasOne("API.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("API.Models.AssigneeTable", b =>
                 {
-                    b.Navigation("PayrollAdditionItems");
                     b.Navigation("PayrollAdditionItems");
 
                     b.Navigation("PayrollDeductionItems");
                 });
 
-            //b.Navigation("PayrollDeductionItems");
             modelBuilder.Entity("API.Models.Department", b =>
                 {
                     b.Navigation("EmployeeBiodatas");
+
+                    b.Navigation("JobDescriptions");
                 });
 
-            modelBuilder.Entity("API.Models.Department", b =>
             modelBuilder.Entity("API.Models.EmployeeBiodata", b =>
                 {
                     b.Navigation("PayrollAdditionItemsAssignments");
@@ -1356,75 +1476,50 @@ namespace API.Migrations
 
                     b.Navigation("PayrollOvertimeItemsAssignments");
 
-                    modelBuilder.Entity("API.Models.EmployeeBiodata", b =>
-                        {
-                            b.Navigation("PayrollTransactions");
+                    b.Navigation("PayrollTransactions");
 
-                            b.Navigation("Payslips");
+                    b.Navigation("Payslips");
 
-                            b.Navigation("StatutoryDeductions");
+                    b.Navigation("StatutoryDeductions");
 
-                            b.Navigation("Tax");
-                        });
+                    b.Navigation("Tax");
+                });
 
-                    modelBuilder.Entity("API.Models.JobDescription", b =>
-                        {
-                            b.Navigation("EmployeeBiodatas");
-                        });
+            modelBuilder.Entity("API.Models.JobDescription", b =>
+                {
+                    b.Navigation("EmployeeBiodatas");
+                });
 
-                    modelBuilder.Entity("API.Models.Password", b =>
-                        {
-                            b.Navigation("EmployeeBiodata");
-                        });
+            modelBuilder.Entity("API.Models.PayrollAdditionItem", b =>
+                {
+                    b.Navigation("PayrollAdditionItemsAssignments");
+                });
 
-                    modelBuilder.Entity("API.Models.PayrollCategory", b =>
-                        {
-                            b.Navigation("PayrollAdditionItems");
-                        });
+            modelBuilder.Entity("API.Models.PayrollCategory", b =>
+                {
+                    b.Navigation("PayrollAdditionItems");
+                });
 
-                    modelBuilder.Entity("API.Models.PayrollRate", b =>
-                        {
-                            b.Navigation("PayrollOvertimeItems");
-                        });
+            modelBuilder.Entity("API.Models.PayrollDeductionItem", b =>
+                {
+                    b.Navigation("PayrollDeductionItemsAssignments");
+                });
 
-                    modelBuilder.Entity("API.Models.PensionFundAdministration", b =>
-                    modelBuilder.Entity("API.Models.PayrollAdditionItem", b =>
-                        {
-                            b.Navigation("PayrollAdditionItemsAssignments");
-                        }));
+            modelBuilder.Entity("API.Models.PayrollOvertimeItem", b =>
+                {
+                    b.Navigation("PayrollOvertimeItemsAssignments");
+                });
 
-                    modelBuilder.Entity("API.Models.PayrollCategory", b =>
-                        {
-                            b.Navigation("PayrollAdditionItems");
-                        });
+            modelBuilder.Entity("API.Models.PayrollRate", b =>
+                {
+                    b.Navigation("PayrollOvertimeItems");
+                });
 
-                    modelBuilder.Entity("API.Models.PayrollDeductionItem", b =>
-                        {
-                            b.Navigation("PayrollDeductionItemsAssignments");
-                        });
-
-                    modelBuilder.Entity("API.Models.PayrollOvertimeItem", b =>
-                        {
-                            b.Navigation("PayrollOvertimeItemsAssignments");
-                        });
-
-                    modelBuilder.Entity("API.Models.PayrollRate", b =>
-                        {
-                            b.Navigation("PayrollOvertimeItems");
-                        });
-
-                    modelBuilder.Entity("API.Models.PensionFundAdministration", b =>
-                        {
-                            b.Navigation("StatutoryDeductions");
-                        });
-
-                    modelBuilder.Entity("API.Models.Tax", b =>
-                        {
-                            b.Navigation("Payslips");
-                        });
+            modelBuilder.Entity("API.Models.PensionFundAdministration", b =>
+                {
+                    b.Navigation("StatutoryDeductions");
+                });
 #pragma warning restore 612, 618
-                })); 
-        
         }
-    } 
+    }
 }

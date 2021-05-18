@@ -1,9 +1,7 @@
 ﻿using API.Data_Models.Dtos;
 using API.Models;
 using AutoMapper;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -53,7 +51,7 @@ namespace API.Repositories
         public async Task<bool> UpdateTimeSheetAsync(TimeSheetDto model)
         {
             var datatimesheet = await context.TimeSheets.FirstOrDefaultAsync(s => s.EmployeeId == model.EmployeeId);
-            if (datatimesheet != null)
+            if (datatimesheet is not null)
             {
                 mapper.Map(model, datatimesheet);
                 await context.SaveChangesAsync();
